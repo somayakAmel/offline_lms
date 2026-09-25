@@ -1,0 +1,14 @@
+{
+  "clear": "Clear",
+  "done": "Done",
+  "tryAgain": "Try again",
+  "retry": "Retry",
+  "error": "Error",
+  "success": "Success",
+  "warning": "Warning",
+  "cancel": "Cancel",
+  "next": "Next",
+  "search": "Search",
+  "somethingWentWrong": "Something went wrong",
+  "noResultsFound": "No results found"
+}

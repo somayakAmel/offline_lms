@@ -1,0 +1,14 @@
+{
+  "clear": "مسح",
+  "done": "تم",
+  "tryAgain": "أعد المحاولة",
+  "retry": "إعادة المحاولة",
+  "error": "خطأ",
+  "success": "نجاح",
+  "warning": "تحذير",
+  "cancel": "إلغاء",
+  "next": "التالي",
+  "search": "بحث",
+  "somethingWentWrong": "حدث خطأ ما",
+  "noResultsFound": "لم يتم العثور على نتائج"
+}
