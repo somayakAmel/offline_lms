@@ -32,7 +32,6 @@
   "noCoursesTitle": "لا توجد دورات بعد",
   "noCoursesMessage": "ستظهر الدورات هنا عند إضافتها إلى التطبيق.",
   "profilePlaceholder": "ستجد هنا قريبًا معلوماتك وإعدادات اللغة والمظهر.",
-  "lessonPlayerUnavailable": "مشغّل الدروس غير متاح بعد.",
   "sections": "الأقسام",
   "lessonsLabel": "الدروس",
   "duration": "المدة",
@@ -46,5 +45,12 @@
   "noLessonsMessage": "لا توجد دروس متاحة في هذه الدورة حالياً.",
   "courseNotFoundTitle": "لم يتم العثور على الدورة",
   "courseNotFoundMessage": "هذه الدورة غير موجودة في قائمة الدورات.",
-  "backToCourses": "العودة إلى الدورات"
+  "backToCourses": "العودة إلى الدورات",
+  "nextLesson": "الدرس التالي",
+  "lessonCompletedBanner": "اكتمل الدرس",
+  "unlockNextHint": "أكمل 90% من هذا الدرس لفتح الدرس التالي.",
+  "courseFinished": "أنهيت جميع دروس هذه الدورة.",
+  "videoLoadErrorTitle": "تعذّر تحميل الفيديو",
+  "videoLoadErrorMessage": "ملف فيديو هذا الدرس غير متاح.",
+  "playbackSpeed": "سرعة التشغيل"
 }

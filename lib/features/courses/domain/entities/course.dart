@@ -23,6 +23,14 @@ class Course {
         for (final section in sections) ...section.lessons,
       ];
 
+  /// The lesson after [lessonId] in course order, or `null` for the last
+  /// lesson (or an unknown id).
+  Lesson? lessonAfter(String lessonId) {
+    final all = lessons;
+    final index = all.indexWhere((lesson) => lesson.id == lessonId);
+    return index < 0 || index == all.length - 1 ? null : all[index + 1];
+  }
+
   /// Sum of all lesson durations, in seconds.
   int get totalDurationSec =>
       sections.fold(0, (total, section) => total + section.totalDurationSec);

@@ -29,7 +29,6 @@
   "noCoursesTitle": "No courses yet",
   "noCoursesMessage": "Courses will appear here once they're added to the app.",
   "profilePlaceholder": "Your details and language and theme settings will be here soon.",
-  "lessonPlayerUnavailable": "The lesson player isn't available yet.",
   "sections": "Sections",
   "lessonsLabel": "Lessons",
   "duration": "Duration",
@@ -43,5 +42,12 @@
   "noLessonsMessage": "This course has no lessons available yet.",
   "courseNotFoundTitle": "Course not found",
   "courseNotFoundMessage": "This course isn't in the course list.",
-  "backToCourses": "Back to courses"
+  "backToCourses": "Back to courses",
+  "nextLesson": "Next lesson",
+  "lessonCompletedBanner": "Lesson completed",
+  "unlockNextHint": "Watch 90% of this lesson to unlock the next one.",
+  "courseFinished": "You have finished every lesson in this course.",
+  "videoLoadErrorTitle": "Couldn't load the video",
+  "videoLoadErrorMessage": "This lesson's video file isn't available.",
+  "playbackSpeed": "Playback speed"
 }

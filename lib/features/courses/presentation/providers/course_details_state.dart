@@ -23,6 +23,12 @@ class CourseDetailsState {
   bool get hasLessons => lessonCount > 0;
   int get percent => (progress * 100).round();
 
+  /// The lesson after [lessonId] in course order, with its status.
+  LessonItem? nextAfter(String lessonId) {
+    final next = course.lessonAfter(lessonId);
+    return next == null ? null : lessonById(next.id);
+  }
+
   LessonItem? lessonById(String lessonId) {
     for (final section in sections) {
       for (final item in section.lessons) {

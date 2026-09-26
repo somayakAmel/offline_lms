@@ -38,7 +38,13 @@ class StringsManager {
   static const String noCoursesTitle = 'noCoursesTitle';
   static const String noCoursesMessage = 'noCoursesMessage';
   static const String profilePlaceholder = 'profilePlaceholder';
-  static const String lessonPlayerUnavailable = 'lessonPlayerUnavailable';
+  static const String nextLesson = 'nextLesson';
+  static const String lessonCompletedBanner = 'lessonCompletedBanner';
+  static const String unlockNextHint = 'unlockNextHint';
+  static const String courseFinished = 'courseFinished';
+  static const String videoLoadErrorTitle = 'videoLoadErrorTitle';
+  static const String videoLoadErrorMessage = 'videoLoadErrorMessage';
+  static const String playbackSpeed = 'playbackSpeed';
   static const String sections = 'sections';
   static const String lessonsLabel = 'lessonsLabel';
   static const String duration = 'duration';
