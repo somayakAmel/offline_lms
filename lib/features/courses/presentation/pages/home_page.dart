@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../src/core/localization/l10n/localization_extension.dart';
 import '../../../../src/core/localization/l10n/strings_manager.dart';
+import '../../../../src/core/router/app_routes.dart';
 import '../../../../src/core/theme/app_layout.dart';
 import '../providers/home_notifier.dart';
 import '../providers/home_state.dart';
 import '../widgets/continue_watching_card.dart';
 import '../widgets/course_card.dart';
 import '../widgets/education_pattern.dart';
-import '../widgets/home_status_views.dart';
+import '../widgets/status_views.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -69,8 +71,10 @@ class HomePage extends ConsumerWidget {
         _SectionTitle(StringsManager.continueWatching.tr(context)),
         ContinueWatchingCard(
           item: continueWatching,
-          onResume: () =>
-              _showUnavailable(context, StringsManager.lessonPlayerUnavailable),
+          onResume: () => context.push(AppRoutes.courseDetails(
+            continueWatching.course.id,
+            lessonId: continueWatching.lesson.id,
+          )),
         ),
         const SizedBox(height: 32),
       ],
@@ -82,18 +86,11 @@ class HomePage extends ConsumerWidget {
           if (index > 0) const SizedBox(height: 14),
           CourseCard(
             overview: overview,
-            onTap: () => _showUnavailable(
-                context, StringsManager.courseDetailsUnavailable),
+            onTap: () =>
+                context.push(AppRoutes.courseDetails(overview.course.id)),
           ),
         ],
     ];
-  }
-
-  // The lesson player and course details come in later steps.
-  void _showUnavailable(BuildContext context, String messageKey) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(messageKey.tr(context))));
   }
 }
 
@@ -119,10 +116,21 @@ class _Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      header: true,
-      child: Text(StringsManager.welcomeTitle.tr(context),
-          style: Theme.of(context).textTheme.headlineSmall),
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(StringsManager.welcomeTitle.tr(context),
+              style: theme.textTheme.headlineSmall),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          StringsManager.welcomeSubtitle.tr(context),
+          style: theme.textTheme.bodyMedium,
+        ),
+      ],
     );
   }
 }

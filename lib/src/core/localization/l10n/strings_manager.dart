@@ -22,6 +22,7 @@ class StringsManager {
   static const String home = 'home';
   static const String profile = 'profile';
   static const String welcomeTitle = 'welcomeTitle';
+  static const String welcomeSubtitle = 'welcomeSubtitle';
   static const String continueWatching = 'continueWatching';
   static const String resumeLesson = 'resumeLesson';
 
@@ -38,5 +39,18 @@ class StringsManager {
   static const String noCoursesMessage = 'noCoursesMessage';
   static const String profilePlaceholder = 'profilePlaceholder';
   static const String lessonPlayerUnavailable = 'lessonPlayerUnavailable';
-  static const String courseDetailsUnavailable = 'courseDetailsUnavailable';
+  static const String sections = 'sections';
+  static const String lessonsLabel = 'lessonsLabel';
+  static const String duration = 'duration';
+  static const String yourProgress = 'yourProgress';
+  static const String courseContent = 'courseContent';
+  static const String lessonCompleted = 'lessonCompleted';
+  static const String lessonLocked = 'lessonLocked';
+  static const String lessonNotes = 'lessonNotes';
+  static const String notesUnavailable = 'notesUnavailable';
+  static const String noLessonsTitle = 'noLessonsTitle';
+  static const String noLessonsMessage = 'noLessonsMessage';
+  static const String courseNotFoundTitle = 'courseNotFoundTitle';
+  static const String courseNotFoundMessage = 'courseNotFoundMessage';
+  static const String backToCourses = 'backToCourses';
 }

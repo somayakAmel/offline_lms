@@ -22,4 +22,8 @@ class Course {
   List<Lesson> get lessons => [
         for (final section in sections) ...section.lessons,
       ];
+
+  /// Sum of all lesson durations, in seconds.
+  int get totalDurationSec =>
+      sections.fold(0, (total, section) => total + section.totalDurationSec);
 }

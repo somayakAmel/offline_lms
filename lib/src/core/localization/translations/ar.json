@@ -15,6 +15,7 @@
   "home": "الرئيسية",
   "profile": "الملف الشخصي",
   "welcomeTitle": "مرحبًا بك",
+  "welcomeSubtitle": "اختر دورة وتابع دروسك من حيث توقفت.",
   "continueWatching": "تابع المشاهدة",
   "resumeLesson": "استئناف الدرس",
   "watchedOf": "{position} من {duration}",
@@ -32,5 +33,18 @@
   "noCoursesMessage": "ستظهر الدورات هنا عند إضافتها إلى التطبيق.",
   "profilePlaceholder": "ستجد هنا قريبًا معلوماتك وإعدادات اللغة والمظهر.",
   "lessonPlayerUnavailable": "مشغّل الدروس غير متاح بعد.",
-  "courseDetailsUnavailable": "صفحة تفاصيل الدورة غير متاحة بعد."
+  "sections": "الأقسام",
+  "lessonsLabel": "الدروس",
+  "duration": "المدة",
+  "yourProgress": "تقدّمك في الدورة",
+  "courseContent": "محتوى الدورة",
+  "lessonCompleted": "مكتمل",
+  "lessonLocked": "أكمل الدرس السابق لفتح هذا الدرس.",
+  "lessonNotes": "ملاحظات الدرس",
+  "notesUnavailable": "ملاحظات الدروس غير متاحة بعد.",
+  "noLessonsTitle": "لا توجد دروس متاحة حالياً",
+  "noLessonsMessage": "لا توجد دروس متاحة في هذه الدورة حالياً.",
+  "courseNotFoundTitle": "لم يتم العثور على الدورة",
+  "courseNotFoundMessage": "هذه الدورة غير موجودة في قائمة الدورات.",
+  "backToCourses": "العودة إلى الدورات"
 }

@@ -90,6 +90,36 @@ class CoursesErrorView extends StatelessWidget {
       );
 }
 
+/// Course details: the course has no lessons (no sections, or empty ones).
+class CourseNoLessonsView extends StatelessWidget {
+  const CourseNoLessonsView({super.key});
+
+  @override
+  Widget build(BuildContext context) => _MessageView(
+        icon: Icons.video_library_outlined,
+        title: StringsManager.noLessonsTitle.tr(context),
+        message: StringsManager.noLessonsMessage.tr(context),
+      );
+}
+
+/// Course details: the course id is not in the catalog.
+class CourseNotFoundView extends StatelessWidget {
+  const CourseNotFoundView({super.key, required this.onBack});
+
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) => _MessageView(
+        icon: Icons.search_off_rounded,
+        title: StringsManager.courseNotFoundTitle.tr(context),
+        message: StringsManager.courseNotFoundMessage.tr(context),
+        action: FilledButton.tonal(
+          onPressed: onBack,
+          child: Text(StringsManager.backToCourses.tr(context)),
+        ),
+      );
+}
+
 class _MessageView extends StatelessWidget {
   const _MessageView({
     required this.icon,

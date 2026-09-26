@@ -46,6 +46,7 @@ class _FloatingNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
+            width: MediaQuery.sizeOf(context).width * 0.75,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: scheme.surfaceContainerLowest,
@@ -59,23 +60,27 @@ class _FloatingNavBar extends StatelessWidget {
                 ),
               ],
             ),
+            // Each item takes half of the bar.
             child: Row(
-              mainAxisSize: MainAxisSize.min,
               children: [
-                _NavItem(
-                  icon: Icons.home_outlined,
-                  selectedIcon: Icons.home_rounded,
-                  label: StringsManager.home.tr(context),
-                  selected: currentIndex == 0,
-                  onTap: () => onSelected(0),
+                Expanded(
+                  child: _NavItem(
+                    icon: Icons.home_outlined,
+                    selectedIcon: Icons.home_rounded,
+                    label: StringsManager.home.tr(context),
+                    selected: currentIndex == 0,
+                    onTap: () => onSelected(0),
+                  ),
                 ),
                 const SizedBox(width: 4),
-                _NavItem(
-                  icon: Icons.person_outline_rounded,
-                  selectedIcon: Icons.person_rounded,
-                  label: StringsManager.profile.tr(context),
-                  selected: currentIndex == 1,
-                  onTap: () => onSelected(1),
+                Expanded(
+                  child: _NavItem(
+                    icon: Icons.person_outline_rounded,
+                    selectedIcon: Icons.person_rounded,
+                    label: StringsManager.profile.tr(context),
+                    selected: currentIndex == 1,
+                    onTap: () => onSelected(1),
+                  ),
                 ),
               ],
             ),

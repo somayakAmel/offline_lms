@@ -1,6 +1,7 @@
 import '../entities/course.dart';
 import '../entities/lesson.dart';
 import '../entities/lesson_progress.dart';
+import '../entities/lesson_status.dart';
 
 /// Learning-progress rules shared by the courses screen and the player.
 class ProgressService {
@@ -31,6 +32,34 @@ class ProgressService {
       lesson.durationSec <= 0
           ? 0
           : (positionSeconds / lesson.durationSec).clamp(0.0, 1.0);
+
+  /// Lessons unlock in course order: the first lesson is open, and each
+  /// later lesson opens once the one before it is completed.
+  bool isLessonUnlocked(
+    Course course,
+    String lessonId,
+    Map<String, LessonProgress> progressByLessonId,
+  ) {
+    final lessons = course.lessons;
+    final index = lessons.indexWhere((lesson) => lesson.id == lessonId);
+    if (index < 0) return false;
+    if (index == 0) return true;
+    return progressByLessonId[lessons[index - 1].id]?.completed ?? false;
+  }
+
+  LessonStatus lessonStatus(
+    Course course,
+    Lesson lesson,
+    Map<String, LessonProgress> progressByLessonId,
+  ) {
+    final progress = progressByLessonId[lesson.id];
+    if (progress?.completed ?? false) return LessonStatus.completed;
+    if (!isLessonUnlocked(course, lesson.id, progressByLessonId)) {
+      return LessonStatus.locked;
+    }
+    if (isLessonInProgress(lesson, progress)) return LessonStatus.inProgress;
+    return LessonStatus.available;
+  }
 
   /// Fraction of [course] lessons that are completed, from 0 to 1.
   double courseProgress(

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../src/core/localization/l10n/localization_extension.dart';
 import '../../../../src/core/localization/l10n/strings_manager.dart';
-import '../../../../src/core/router/app_router.dart';
+import '../../../../src/core/router/app_routes.dart';
 import '../../../../src/core/theme/app_theme.dart';
 
 class SplashPage extends StatefulWidget {

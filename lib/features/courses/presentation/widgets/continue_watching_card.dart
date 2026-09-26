@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../src/core/localization/l10n/localization_extension.dart';
 import '../../../../src/core/localization/l10n/strings_manager.dart';
+import '../../../../src/core/functions/duration_format.dart';
+import '../../../../src/core/theme/app_theme.dart';
 import '../providers/home_state.dart';
 import 'course_progress_bar.dart';
 import 'course_thumbnail.dart';
@@ -52,7 +54,7 @@ class ContinueWatchingCard extends StatelessWidget {
                         child: const Padding(
                           padding: EdgeInsets.all(6),
                           child: Icon(Icons.play_arrow_rounded,
-                              size: 22, color: Color(0xFF0F2A36)),
+                              size: 22, color: AppColors.ink),
                         ),
                       ),
                     ],
@@ -95,9 +97,9 @@ class ContinueWatchingCard extends StatelessWidget {
                       StringsManager.watchedOf
                           .tr(context)
                           .replaceAll('{position}',
-                              _formatSeconds(item.positionSeconds))
+                              formatDuration(item.positionSeconds))
                           .replaceAll('{duration}',
-                              _formatSeconds(item.lesson.durationSec)),
+                              formatDuration(item.lesson.durationSec)),
                       style: theme.textTheme.bodySmall
                           ?.copyWith(color: onCard.withValues(alpha: 0.8)),
                     ),
@@ -118,16 +120,5 @@ class ContinueWatchingCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  // Unicode left-to-right isolate, so "1:05" is not reordered in RTL text.
-  static final String _ltrStart = String.fromCharCode(0x2066);
-  static final String _ltrEnd = String.fromCharCode(0x2069);
-
-  /// `m:ss`, always left-to-right digits.
-  static String _formatSeconds(int totalSeconds) {
-    final minutes = totalSeconds ~/ 60;
-    final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
-    return '$_ltrStart$minutes:$seconds$_ltrEnd';
   }
 }

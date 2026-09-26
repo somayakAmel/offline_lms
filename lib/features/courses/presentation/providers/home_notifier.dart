@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/entities/course.dart';
 import '../../domain/entities/lesson_progress.dart';
 import '../../domain/services/progress_service.dart';
-import 'courses_providers.dart';
+import '../../di/courses_providers.dart';
 import 'home_state.dart';
 
 /// No automatic retry: failures show an error state with a Retry button.
