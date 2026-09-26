@@ -1,10 +1,12 @@
 import 'package:sqflite/sqflite.dart';
 
-import '../../../../core/database/app_database.dart';
+import '../../../../src/core/database/app_database.dart';
 import '../models/lesson_note_model.dart';
 import '../models/lesson_progress_model.dart';
 
 abstract interface class ProgressLocalDataSource {
+  Future<List<LessonProgressModel>> getAllLessonProgress();
+
   Future<LessonProgressModel?> getLessonProgress(String lessonId);
 
   Future<void> saveLessonProgress(LessonProgressModel progress);
@@ -30,6 +32,12 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
   final Database _db;
 
   static const String _lastOpenedLessonKey = 'last_opened_lesson_id';
+
+  @override
+  Future<List<LessonProgressModel>> getAllLessonProgress() async {
+    final rows = await _db.query(AppDatabase.lessonProgressTable);
+    return rows.map(LessonProgressModel.fromMap).toList(growable: false);
+  }
 
   @override
   Future<LessonProgressModel?> getLessonProgress(String lessonId) async {

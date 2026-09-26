@@ -1,3 +1,4 @@
+import 'lesson.dart';
 import 'section.dart';
 
 class Course {
@@ -16,4 +17,9 @@ class Course {
   /// Bundled asset path of the course thumbnail.
   final String thumbnail;
   final List<Section> sections;
+
+  /// All lessons in section order.
+  List<Lesson> get lessons => [
+        for (final section in sections) ...section.lessons,
+      ];
 }

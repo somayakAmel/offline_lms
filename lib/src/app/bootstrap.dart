@@ -1,10 +1,21 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/di/service_locator.dart';
+import '../core/database/app_database.dart';
+import '../core/di/core_providers.dart';
 import 'app.dart';
 
 Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initDependencies();
-  runApp(const App());
+  final prefs = await SharedPreferences.getInstance();
+  final database = await AppDatabase.open();
+
+  runApp(ProviderScope(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      databaseProvider.overrideWithValue(database),
+    ],
+    child: const App(),
+  ));
 }

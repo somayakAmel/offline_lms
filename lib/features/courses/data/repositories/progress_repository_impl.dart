@@ -11,6 +11,12 @@ class ProgressRepositoryImpl implements ProgressRepository {
   final ProgressLocalDataSource _localDataSource;
 
   @override
+  Future<List<LessonProgress>> getAllLessonProgress() async =>
+      (await _localDataSource.getAllLessonProgress())
+          .map((model) => model.toEntity())
+          .toList(growable: false);
+
+  @override
   Future<LessonProgress?> getLessonProgress(String lessonId) async =>
       (await _localDataSource.getLessonProgress(lessonId))?.toEntity();
 

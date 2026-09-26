@@ -2,6 +2,8 @@ import '../entities/lesson_note.dart';
 import '../entities/lesson_progress.dart';
 
 abstract interface class ProgressRepository {
+  Future<List<LessonProgress>> getAllLessonProgress();
+
   Future<LessonProgress?> getLessonProgress(String lessonId);
 
   /// Never turns a completed lesson back to not completed.

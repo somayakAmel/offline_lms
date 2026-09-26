@@ -99,6 +99,13 @@
           ]
         }
       ]
+    },
+    {
+      "id": "pharmacology-101",
+      "title": "مبادئ علم الأدوية",
+      "instructor": "د. ليلى حسن",
+      "thumbnail": "assets/images/pharmacology.png",
+      "sections": []
     }
   ]
 }
