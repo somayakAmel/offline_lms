@@ -37,7 +37,20 @@ class StringsManager {
   static const String coursesLoadErrorMessage = 'coursesLoadErrorMessage';
   static const String noCoursesTitle = 'noCoursesTitle';
   static const String noCoursesMessage = 'noCoursesMessage';
-  static const String profilePlaceholder = 'profilePlaceholder';
+  static const String personalInformation = 'personalInformation';
+  static const String name = 'name';
+  static const String email = 'email';
+  static const String phone = 'phone';
+  static const String appearance = 'appearance';
+  static const String theme = 'theme';
+  static const String themeSystem = 'themeSystem';
+  static const String themeLight = 'themeLight';
+  static const String themeDark = 'themeDark';
+  static const String language = 'language';
+
+  /// Language names, written in their own language in every translation.
+  static const String languageArabic = 'languageArabic';
+  static const String languageEnglish = 'languageEnglish';
   static const String nextLesson = 'nextLesson';
   static const String lessonCompletedBanner = 'lessonCompletedBanner';
   static const String unlockNextHint = 'unlockNextHint';
