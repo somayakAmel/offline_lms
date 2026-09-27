@@ -120,7 +120,7 @@ video player.
   - Bottom sheet editor, explicit Save, discard confirmation, clearing a note
     deletes it. Notes are for unlocked lessons only.
 - [ ] Remember the last playback speed
-- [ ] Widget tests (left out on purpose; see section 8)
+- [ ] Widget tests
 
 ## 11. Deliverables
 
