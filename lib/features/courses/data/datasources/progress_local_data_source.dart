@@ -19,6 +19,8 @@ abstract interface class ProgressLocalDataSource {
 
   Future<void> deleteLessonNote(String lessonId);
 
+  Future<Set<String>> getLessonIdsWithNotes();
+
   Future<String?> getLastOpenedLessonId();
 
   Future<void> saveLastOpenedLessonId(String lessonId);
@@ -89,6 +91,15 @@ class ProgressLocalDataSourceImpl implements ProgressLocalDataSource {
         where: 'lesson_id = ?',
         whereArgs: [lessonId],
       );
+
+  @override
+  Future<Set<String>> getLessonIdsWithNotes() async {
+    final rows = await _db.query(
+      AppDatabase.lessonNotesTable,
+      columns: ['lesson_id'],
+    );
+    return {for (final row in rows) row['lesson_id']! as String};
+  }
 
   @override
   Future<String?> getLastOpenedLessonId() async {

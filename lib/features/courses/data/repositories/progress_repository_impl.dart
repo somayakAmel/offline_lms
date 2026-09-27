@@ -53,6 +53,10 @@ class ProgressRepositoryImpl implements ProgressRepository {
       _localDataSource.deleteLessonNote(lessonId);
 
   @override
+  Future<Set<String>> getLessonIdsWithNotes() =>
+      _localDataSource.getLessonIdsWithNotes();
+
+  @override
   Future<String?> getLastOpenedLessonId() =>
       _localDataSource.getLastOpenedLessonId();
 

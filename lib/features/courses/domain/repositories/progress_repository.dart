@@ -18,6 +18,9 @@ abstract interface class ProgressRepository {
 
   Future<void> deleteLessonNote(String lessonId);
 
+  /// Ids of every lesson that has a saved note.
+  Future<Set<String>> getLessonIdsWithNotes();
+
   Future<String?> getLastOpenedLessonId();
 
   Future<void> saveLastOpenedLessonId(String lessonId);

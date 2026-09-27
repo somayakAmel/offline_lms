@@ -9,10 +9,12 @@ import '../../domain/entities/lesson_status.dart';
 import '../providers/course_details_provider.dart';
 import '../providers/course_details_state.dart';
 import '../providers/home_notifier.dart';
+import '../providers/lesson_notes_provider.dart';
 import '../providers/lesson_player_provider.dart';
 import '../widgets/course_media_area.dart';
 import '../widgets/course_progress_bar.dart';
 import '../widgets/course_stats_row.dart';
+import '../widgets/lesson_note_sheet.dart';
 import '../widgets/status_views.dart';
 import '../widgets/section_card.dart';
 
@@ -69,9 +71,17 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
   /// nothing shows it.
   void _select(String lessonId) => setState(() => _selectedLessonId = lessonId);
 
-  // Notes are added in a later step.
-  void _onNotesTap(LessonItem item) =>
-      _showMessage(StringsManager.notesUnavailable);
+  /// Notes work on every lesson, locked ones included: they are personal
+  /// and don't affect unlocking or completion. The sheet opens above this
+  /// page, so the player stays mounted and keeps its position.
+  Future<void> _onNotesTap(LessonItem item) async {
+    final result = await showLessonNoteSheet(context, item.lesson);
+    if (!mounted || result == null) return;
+    _showMessage(switch (result) {
+      LessonNoteResult.saved => StringsManager.noteSaved,
+      LessonNoteResult.deleted => StringsManager.noteDeleted,
+    });
+  }
 
   void _showMessage(String key) {
     ScaffoldMessenger.of(context)
@@ -210,11 +220,17 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
                 const SizedBox(height: 12),
                 for (final (index, section) in sectionsWithLessons.indexed) ...[
                   if (index > 0) const SizedBox(height: 12),
-                  SectionCard(
-                    item: section,
-                    selectedLessonId: selectedLesson?.id,
-                    onLessonTap: _onLessonTap,
-                    onNotesTap: _onNotesTap,
+                  // Only the cards rebuild when a note is saved or deleted.
+                  Consumer(
+                    builder: (context, ref, _) => SectionCard(
+                      item: section,
+                      selectedLessonId: selectedLesson?.id,
+                      onLessonTap: _onLessonTap,
+                      onNotesTap: _onNotesTap,
+                      lessonIdsWithNotes:
+                          ref.watch(lessonIdsWithNotesProvider).value ??
+                              const {},
+                    ),
                   ),
                 ],
               ] else ...[

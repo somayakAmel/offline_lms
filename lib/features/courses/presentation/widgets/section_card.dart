@@ -14,12 +14,16 @@ class SectionCard extends StatefulWidget {
     required this.selectedLessonId,
     required this.onLessonTap,
     required this.onNotesTap,
+    this.lessonIdsWithNotes = const {},
   });
 
   final SectionItem item;
   final String? selectedLessonId;
   final ValueChanged<LessonItem> onLessonTap;
   final ValueChanged<LessonItem> onNotesTap;
+
+  /// Lessons whose note icon shows that a note exists.
+  final Set<String> lessonIdsWithNotes;
 
   @override
   State<SectionCard> createState() => _SectionCardState();
@@ -91,6 +95,8 @@ class _SectionCardState extends State<SectionCard> {
                           selected: lesson.lesson.id == widget.selectedLessonId,
                           onTap: () => widget.onLessonTap(lesson),
                           onNotesTap: () => widget.onNotesTap(lesson),
+                          hasNote: widget.lessonIdsWithNotes
+                              .contains(lesson.lesson.id),
                         ),
                     ],
                   )
@@ -108,12 +114,14 @@ class _LessonTile extends StatelessWidget {
     required this.selected,
     required this.onTap,
     required this.onNotesTap,
+    required this.hasNote,
   });
 
   final LessonItem item;
   final bool selected;
   final VoidCallback onTap;
   final VoidCallback onNotesTap;
+  final bool hasNote;
 
   @override
   Widget build(BuildContext context) {
@@ -167,10 +175,17 @@ class _LessonTile extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: onNotesTap,
-                tooltip: StringsManager.lessonNotes.tr(context),
-                icon: Icon(Icons.edit_note_rounded,
-                    color: scheme.onSurfaceVariant),
+                // Notes open once the lesson is unlocked.
+                onPressed: item.isLocked ? null : onNotesTap,
+                tooltip: (hasNote
+                        ? StringsManager.editNote
+                        : StringsManager.addNote)
+                    .tr(context),
+                icon: hasNote
+                    ? Icon(Icons.sticky_note_2_rounded,
+                        color: scheme.secondary)
+                    : Icon(Icons.sticky_note_2_outlined,
+                        color: scheme.onSurfaceVariant),
               ),
             ],
           ),
