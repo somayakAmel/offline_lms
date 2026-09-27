@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../src/core/localization/l10n/localization_extension.dart';
 import '../../../../src/core/localization/l10n/strings_manager.dart';
 import '../../../../src/core/router/app_routes.dart';
+import '../../domain/entities/lesson.dart';
 import '../../domain/entities/lesson_status.dart';
 import '../providers/course_details_provider.dart';
 import '../providers/course_details_state.dart';
@@ -71,10 +73,10 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
   /// nothing shows it.
   void _select(String lessonId) => setState(() => _selectedLessonId = lessonId);
 
-  /// Notes work on every lesson, locked ones included: they are personal
-  /// and don't affect unlocking or completion. The sheet opens above this
-  /// page, so the player stays mounted and keeps its position.
+  /// Notes are only for unlocked lessons. The sheet opens above this page,
+  /// so the player stays mounted and keeps its position.
   Future<void> _onNotesTap(LessonItem item) async {
+    if (item.isLocked) return;
     final result = await showLessonNoteSheet(context, item.lesson);
     if (!mounted || result == null) return;
     _showMessage(switch (result) {
@@ -113,16 +115,18 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
     if (details.hasValue && details.value != null) {
       body = _content(details.requireValue!);
     } else if (details.isLoading) {
-      body = const Center(child: CircularProgressIndicator());
+      body = _statusLayout(const Center(child: CircularProgressIndicator()));
     } else if (details.hasError) {
-      body = Center(
-        child: CoursesErrorView(
-          onRetry: () =>
-              ref.invalidate(courseDetailsProvider(widget.courseId)),
+      body = _statusLayout(
+        Center(
+          child: CoursesErrorView(
+            onRetry: () =>
+                ref.invalidate(courseDetailsProvider(widget.courseId)),
+          ),
         ),
       );
     } else {
-      body = Center(child: CourseNotFoundView(onBack: _goBack));
+      body = _statusLayout(Center(child: CourseNotFoundView(onBack: _goBack)));
     }
 
     return PopScope(
@@ -130,50 +134,108 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _goBack();
       },
-      child: Scaffold(
-        body: SafeArea(
-          bottom: false,
-          child: Center(
-            child: ConstrainedBox(
-              constraints:
-                  const BoxConstraints(maxWidth: CourseDetailsPage.maxWidth),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: IconButton(
-                        onPressed: _goBack,
-                        tooltip:
-                            MaterialLocalizations.of(context).backButtonTooltip,
-                        icon: const Icon(Icons.arrow_back_rounded),
-                      ),
-                    ),
-                  ),
-                  Expanded(child: body),
-                ],
+      child: Scaffold(body: body),
+    );
+  }
+
+  /// Loading, error and not found: a plain back button above the message.
+  Widget _statusLayout(Widget child) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: IconButton(
+                  onPressed: _goBack,
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  icon: const Icon(Icons.arrow_back_rounded),
+                ),
               ),
             ),
-          ),
+            Expanded(child: child),
+          ],
         ),
       ),
     );
   }
 
   Widget _content(CourseDetailsState state) {
-    final theme = Theme.of(context);
     final selected = _selectedLessonId == null
         ? null
         : state.lessonById(_selectedLessonId!);
-    final selectedLesson =
-        selected == null || selected.isLocked ? null : selected.lesson;
-    final sectionsWithLessons =
-        state.sections.where((item) => item.lessons.isNotEmpty);
+    final selectedLesson = selected == null || selected.isLocked
+        ? null
+        : selected.lesson;
+    final sectionsWithLessons = state.sections.where(
+      (item) => item.lessons.isNotEmpty,
+    );
 
+    final topInset = MediaQuery.paddingOf(context).top;
+
+    // The image or video is the top of the screen: it runs behind the
+    // status bar (light icons) with the back button floating on it. It
+    // spans the full width; the rest is centred on tablets.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              CourseMediaArea(
+                course: state.course,
+                lesson: selectedLesson,
+                topInset: topInset,
+              ),
+              PositionedDirectional(
+                top: topInset + 8,
+                start: 12,
+                child: IconButton(
+                  onPressed: _goBack,
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  style: IconButton.styleFrom(
+                    backgroundColor: Colors.black.withValues(alpha: 0.35),
+                    foregroundColor: Colors.white,
+                  ),
+                  icon: const Icon(Icons.arrow_back_rounded),
+                ),
+              ),
+            ],
+          ),
+          Expanded(
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  maxWidth: CourseDetailsPage.maxWidth,
+                ),
+                child: _details(
+                  state,
+                  selected,
+                  selectedLesson,
+                  sectionsWithLessons.toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _details(
+    CourseDetailsState state,
+    LessonItem? selected,
+    Lesson? selectedLesson,
+    List<SectionItem> sectionsWithLessons,
+  ) {
+    final theme = Theme.of(context);
     return Column(
       children: [
-        CourseMediaArea(course: state.course, lesson: selectedLesson),
         if (selected != null && !selected.isLocked)
           _NowPlayingBar(
             current: selected,
@@ -183,7 +245,11 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
         Expanded(
           child: ListView(
             padding: EdgeInsets.fromLTRB(
-                20, 20, 20, 24 + MediaQuery.paddingOf(context).bottom),
+              20,
+              20,
+              20,
+              24 + MediaQuery.paddingOf(context).bottom,
+            ),
             children: [
               Text(
                 state.course.title,
@@ -202,11 +268,15 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(StringsManager.yourProgress.tr(context),
-                          style: theme.textTheme.bodyMedium),
+                      child: Text(
+                        StringsManager.yourProgress.tr(context),
+                        style: theme.textTheme.bodyMedium,
+                      ),
                     ),
-                    Text('${state.percent}%',
-                        style: theme.textTheme.labelLarge),
+                    Text(
+                      '${state.percent}%',
+                      style: theme.textTheme.labelLarge,
+                    ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -214,8 +284,10 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
                 const SizedBox(height: 28),
                 Semantics(
                   header: true,
-                  child: Text(StringsManager.courseContent.tr(context),
-                      style: theme.textTheme.titleLarge),
+                  child: Text(
+                    StringsManager.courseContent.tr(context),
+                    style: theme.textTheme.titleLarge,
+                  ),
                 ),
                 const SizedBox(height: 12),
                 for (final (index, section) in sectionsWithLessons.indexed) ...[
@@ -229,7 +301,7 @@ class _CourseDetailsPageState extends ConsumerState<CourseDetailsPage> {
                       onNotesTap: _onNotesTap,
                       lessonIdsWithNotes:
                           ref.watch(lessonIdsWithNotesProvider).value ??
-                              const {},
+                          const {},
                     ),
                   ),
                 ],
@@ -285,8 +357,8 @@ class _NowPlayingBar extends StatelessWidget {
       hint = next != null
           ? StringsManager.unlockNextHint.tr(context)
           : completed
-              ? StringsManager.courseFinished.tr(context)
-              : null;
+          ? StringsManager.courseFinished.tr(context)
+          : null;
     }
 
     return Container(
@@ -312,19 +384,22 @@ class _NowPlayingBar extends StatelessWidget {
                 if (completed)
                   Row(
                     children: [
-                      Icon(Icons.check_circle_rounded,
-                          size: 16, color: scheme.secondary),
+                      Icon(
+                        Icons.check_circle_rounded,
+                        size: 16,
+                        color: scheme.secondary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         StringsManager.lessonCompletedBanner.tr(context),
                         style: theme.textTheme.bodySmall?.copyWith(
-                            color: scheme.secondary,
-                            fontWeight: FontWeight.w600),
+                          color: scheme.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
-                if (hint != null)
-                  Text(hint, style: theme.textTheme.bodySmall),
+                if (hint != null) Text(hint, style: theme.textTheme.bodySmall),
               ],
             ),
           ),

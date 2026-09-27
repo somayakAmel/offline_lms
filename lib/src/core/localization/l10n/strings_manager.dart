@@ -12,7 +12,6 @@ class StringsManager {
   static const String error = 'error';
   static const String success = 'success';
   static const String warning = 'warning';
-  static const String cancel = 'cancel';
   static const String next = 'next';
   static const String search = 'search';
   static const String somethingWentWrong = 'somethingWentWrong';
