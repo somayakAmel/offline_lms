@@ -9,7 +9,28 @@ class HomeState {
 
   /// The last opened lesson, when it was started and not finished.
   final ContinueWatching? continueWatching;
+
+  /// Courses whose title contains [query]; all courses for a blank query.
+  List<CourseOverview> coursesMatching(String query) {
+    final normalizedQuery = _normalizeForSearch(query);
+    if (normalizedQuery.isEmpty) return courses;
+    return courses
+        .where((overview) =>
+            _normalizeForSearch(overview.course.title).contains(normalizedQuery))
+        .toList();
+  }
 }
+
+/// Lower-cased, with Arabic diacritics removed and common letter variants
+/// unified (أ/إ/آ → ا, ة → ه, ى → ي), so "مقدمه" finds "مقدمة".
+String _normalizeForSearch(String text) => text
+    .trim()
+    .toLowerCase()
+    .replaceAll(RegExp('[ً-ْـ]'), '')
+    .replaceAll(RegExp('[أإآ]'), 'ا')
+    .replaceAll('ة', 'ه')
+    .replaceAll('ى', 'ي')
+    .replaceAll(RegExp(r'\s+'), ' ');
 
 class CourseOverview {
   const CourseOverview({required this.course, required this.progress});

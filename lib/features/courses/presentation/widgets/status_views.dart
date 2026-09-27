@@ -72,6 +72,28 @@ class CoursesEmptyView extends StatelessWidget {
       );
 }
 
+/// No course name matches the search.
+class CoursesNoResultsView extends StatelessWidget {
+  const CoursesNoResultsView({super.key, required this.onClear});
+
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) => _MessageView(
+        icon: Icons.search_off_rounded,
+        title: StringsManager.noResultsFound.tr(context),
+        message: StringsManager.noSearchResultsMessage.tr(context),
+        action: TextButton(
+          onPressed: onClear,
+          // The primary colour is too pale for text on the page background.
+          style: TextButton.styleFrom(
+            foregroundColor: Theme.of(context).colorScheme.secondary,
+          ),
+          child: Text(StringsManager.clearSearch.tr(context)),
+        ),
+      );
+}
+
 class CoursesErrorView extends StatelessWidget {
   const CoursesErrorView({super.key, required this.onRetry});
 

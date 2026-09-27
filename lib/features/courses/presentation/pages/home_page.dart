@@ -13,11 +13,35 @@ import '../widgets/course_card.dart';
 import '../widgets/education_pattern.dart';
 import '../widgets/status_views.dart';
 
-class HomePage extends ConsumerWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  final _search = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _search.addListener(() => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
+
+  void _clearSearch() {
+    _search.clear();
+    FocusScope.of(context).unfocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final home = ref.watch(homeProvider);
     final padding =
         AppLayout.horizontalPadding(MediaQuery.sizeOf(context).width);
@@ -65,8 +89,16 @@ class HomePage extends ConsumerWidget {
   }
 
   List<Widget> _content(BuildContext context, HomeState state) {
-    final continueWatching = state.continueWatching;
+    final query = _search.text;
+    final searching = query.trim().isNotEmpty;
+    final courses = state.coursesMatching(query);
+    // While searching, only the results are shown.
+    final continueWatching = searching ? null : state.continueWatching;
     return [
+      if (state.courses.isNotEmpty) ...[
+        _SearchField(controller: _search, onClear: _clearSearch),
+        const SizedBox(height: 24),
+      ],
       if (continueWatching != null) ...[
         _SectionTitle(StringsManager.continueWatching.tr(context)),
         ContinueWatchingCard(
@@ -81,8 +113,10 @@ class HomePage extends ConsumerWidget {
       _SectionTitle(StringsManager.courses.tr(context)),
       if (state.courses.isEmpty)
         const CoursesEmptyView()
+      else if (courses.isEmpty)
+        CoursesNoResultsView(onClear: _clearSearch)
       else
-        for (final (index, overview) in state.courses.indexed) ...[
+        for (final (index, overview) in courses.indexed) ...[
           if (index > 0) const SizedBox(height: 14),
           CourseCard(
             overview: overview,
@@ -91,6 +125,46 @@ class HomePage extends ConsumerWidget {
           ),
         ],
     ];
+  }
+}
+
+/// Filters the course list by name as the student types.
+class _SearchField extends StatelessWidget {
+  const _SearchField({required this.controller, required this.onClear});
+
+  final TextEditingController controller;
+  final VoidCallback onClear;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.7)),
+    );
+    return TextField(
+      controller: controller,
+      textInputAction: TextInputAction.search,
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+      decoration: InputDecoration(
+        hintText: StringsManager.searchCoursesHint.tr(context),
+        prefixIcon: const Icon(Icons.search_rounded),
+        suffixIcon: controller.text.isEmpty
+            ? null
+            : IconButton(
+                onPressed: onClear,
+                tooltip: StringsManager.clearSearch.tr(context),
+                icon: const Icon(Icons.close_rounded),
+              ),
+        filled: true,
+        fillColor: scheme.surfaceContainerLowest,
+        border: border,
+        enabledBorder: border,
+        focusedBorder: border.copyWith(
+          borderSide: BorderSide(color: scheme.secondary, width: 1.5),
+        ),
+      ),
+    );
   }
 }
 

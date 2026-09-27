@@ -36,6 +36,9 @@ class StringsManager {
   static const String coursesLoadErrorMessage = 'coursesLoadErrorMessage';
   static const String noCoursesTitle = 'noCoursesTitle';
   static const String noCoursesMessage = 'noCoursesMessage';
+  static const String searchCoursesHint = 'searchCoursesHint';
+  static const String noSearchResultsMessage = 'noSearchResultsMessage';
+  static const String clearSearch = 'clearSearch';
   static const String personalInformation = 'personalInformation';
   static const String name = 'name';
   static const String email = 'email';
